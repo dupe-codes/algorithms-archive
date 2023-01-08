@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'scala'
+    id "dev.clojurephant.clojure" version "0.8.0-beta.1"
+}
+
+group 'org.dupe'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'Clojars'
+        url = 'https://repo.clojars.org/'
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    // Clojure dependencies
+    implementation 'org.clojure:clojure:1.11.1'
+    devImplementation 'org.clojure:tools.namespace:1.3.0'
+
+    // Scala dependencies
+    implementation 'org.scala-lang:scala-library:2.13.9'
+}
+
+clojure {
+    builds {
+        main {
+            aotAll()
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
