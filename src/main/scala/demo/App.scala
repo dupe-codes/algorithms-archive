@@ -5,5 +5,5 @@ object App {
     println(greeting())
   }
 
-  def greeting(): String = "Hello, world! I am Scala!"
+  private def greeting(): String = "Hello, world! I am Scala!"
 }
