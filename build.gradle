@@ -26,6 +26,7 @@ dependencies {
 
     // Scala dependencies
     implementation 'org.scala-lang:scala-library:2.13.9'
+    implementation 'org.scalanlp:breeze-natives_3:2.1.0'
 }
 
 clojure {
