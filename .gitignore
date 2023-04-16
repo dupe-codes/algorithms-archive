@@ -42,3 +42,8 @@ bin/
 .DS_Store
 
 .idea
+
+# Python artifacts
+*.pyc
+__pycache__/
+.venv
