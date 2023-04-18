@@ -18,27 +18,14 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def decode(input_path: str, output_path: str) -> None:
-    """ Decodes the input file and writes the output to the output file """
-    encoder = HuffmanEncoder()
-    file = encoder.fit_decoder(input_path)
-    encoder.decode(file, output_path)
-
-
-def encode(input_path: str, output_path: str) -> None:
-    """ Encodes the input file and writes the output to the output file """
-    encoder = HuffmanEncoder()
-    encoder.fit_encoder(input_path)
-    encoder.encode(input_path, output_path)
-
-
 def main() -> None:
     args = parse_args()
 
+    encoder = HuffmanEncoder()
     if args.decode:
-        decode(args.input_path, args.output_path)
+        encoder.decode(args.input_path, args.output_path)
     else:
-        encode(args.input_path, args.output_path)
+        encoder.encode(args.input_path, args.output_path)
 
 
 if __name__ == '__main__':

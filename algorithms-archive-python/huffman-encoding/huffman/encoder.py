@@ -34,6 +34,9 @@ class HuffmanNode:
 
 class HuffmanEncoder:
 
+    _PSEUDO_EOF = 'EOF'
+    _BYTE_SIZE = 8
+
     def __init__(self) -> None:
         """
         Initializes a new Huffman encoder.
@@ -52,8 +55,9 @@ class HuffmanEncoder:
         """
         Builds the encoding tree from the character counts.
         """
-        heap = []
+        heap = [HuffmanNode(HuffmanEncoder._PSEUDO_EOF, 0)]
         for character, count in self._character_counts.items():
+            # Use negative counts so larger counts are at the top of the heap
             heapq.heappush(heap, HuffmanNode(character, count))
 
         while len(heap) > 1:
@@ -79,7 +83,7 @@ class HuffmanEncoder:
                 stack.append((node.left, code + '0'))
                 stack.append((node.right, code + '1'))
 
-    def fit_encoder(self, input_file: str) -> None:
+    def _fit_encoder(self, input_file: str) -> None:
         """
         Fits the encoder to the given input.
         """
@@ -89,7 +93,43 @@ class HuffmanEncoder:
         self._build_encoding_tree()
         self._build_encoding_table()
 
-    def fit_decoder(self, input_encoded_file: str) -> typing.BinaryIO:
+    def _write_header(self, output: typing.BinaryIO) -> None:
+        """
+        Writes the header to the given output file.
+
+        The header is the encoding table, which we need later to decode the data.
+        """
+        pass
+
+    def _write_encoded_data(self, input_file: typing.TextIO, output_file: typing.BinaryIO) -> None:
+        """
+        Writes the encoded data to the given output file.
+        """
+        def write_chunk(chunk, output_file):
+            if len(chunk) == HuffmanEncoder._BYTE_SIZE:
+                output_file.write(bytearray([int(chunk, 2)]))
+                return ''
+            return chunk
+
+        chunk = ''
+        for line in input_file:
+            encoded_line = ''.join(self._encoding_table[char] for char in line)
+
+            for encoded_char in encoded_line:
+                chunk += encoded_char
+                chunk = write_chunk(chunk, output_file)
+
+        # Append the pseudo EOF character
+        pseudo_eof_encoded = self._encoding_table[HuffmanEncoder._PSEUDO_EOF]
+        for bit in pseudo_eof_encoded:
+            chunk += bit
+            chunk = write_chunk(chunk, output_file)
+
+        if len(chunk) > 0:
+            chunk = chunk.ljust(HuffmanEncoder._BYTE_SIZE, '0')
+            output_file.write(bytearray([int(chunk, 2)]))
+
+    def _fit_decoder(self, input_encoded_file: typing.BinaryIO) -> None:
         """
         Fits the decoder to the given input. Returns the file object opened
         in binary mode. The rest of the file can be decoded using the now
@@ -100,8 +140,24 @@ class HuffmanEncoder:
         """
         pass
 
+    def _write_decoded_data(self, input: typing.BinaryIO, output: typing.TextIO) -> None:
+        """
+        Writes the decoded data to the given output file.
+        """
+        pass
+
     def encode(self, input_file: str, destination: str) -> None:
         print('Encoding...')
+        self._fit_encoder(input_file)
 
-    def decode(self, encoded_file: typing.BinaryIO, destination: str) -> None:
+        with open(input_file, 'r') as file:
+            with open(destination, 'wb') as output:
+                self._write_header(output)
+                self._write_encoded_data(file, output)
+
+    def decode(self, input_encoded_file: str, destination: str) -> None:
         print('Decoding...')
+        with open(input_encoded_file, 'rb') as file:
+            with open(destination, 'w') as output:
+                self._fit_decoder(file)
+                self._write_decoded_data(file, output)
