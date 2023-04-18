@@ -1,5 +1,5 @@
 """
-Command line utility for zip and unzip files using Huffman coding.
+Command line utility to zip and unzip files using Huffman coding.
 """
 
 import argparse

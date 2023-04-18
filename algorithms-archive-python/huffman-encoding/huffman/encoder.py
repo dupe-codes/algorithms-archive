@@ -97,7 +97,9 @@ class HuffmanEncoder:
         """
         Writes the header to the given output file.
 
-        The header is the encoding table, which we need later to decode the data.
+        The header is first the number of bytes used for the encoding table followed
+        by the table table itself. The encoding table is needed later to decode the 
+        data.
         """
         pass
 
@@ -105,7 +107,7 @@ class HuffmanEncoder:
         """
         Writes the encoded data to the given output file.
         """
-        def write_chunk(chunk, output_file):
+        def write_chunk(chunk: str, output_file: typing.BinaryIO) -> str:
             if len(chunk) == HuffmanEncoder._BYTE_SIZE:
                 output_file.write(bytearray([int(chunk, 2)]))
                 return ''
@@ -131,12 +133,7 @@ class HuffmanEncoder:
 
     def _fit_decoder(self, input_encoded_file: typing.BinaryIO) -> None:
         """
-        Fits the decoder to the given input. Returns the file object opened
-        in binary mode. The rest of the file can be decoded using the now
-        fit Huffman decoder.
-
-        The file object returned by this method should be closed by the
-        caller.
+        Fits the decoder to the given input. 
         """
         pass
 
@@ -144,7 +141,18 @@ class HuffmanEncoder:
         """
         Writes the decoded data to the given output file.
         """
-        pass
+        def read_bits(input: typing.BinaryIO) -> typing.Generator[str, None, None]:
+            for byte in iter(lambda: input.read(1), b''):
+                for bit in format(ord(byte), 'b'):
+                    yield bit
+
+        current_code = ''
+        for bit in read_bits(input):
+            # Build the code until we find a match
+            current_code += bit
+            if current_code in self._encoding_table:
+                output.write(self._encoding_table[current_code])
+                current_code = ''
 
     def encode(self, input_file: str, destination: str) -> None:
         print('Encoding...')
