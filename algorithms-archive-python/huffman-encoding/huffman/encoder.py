@@ -4,7 +4,7 @@ and decompressing files.
 """
 
 import heapq
-import json
+import struct
 import typing
 
 
@@ -38,6 +38,7 @@ class HuffmanEncoder:
     _PSEUDO_EOF = 'EOF'
     _BYTE_SIZE = 8
     _HEADER_LENGTH_NUM_BYTES = 4
+    _HEADER_ENTRY_NUM_BYTES = 5
 
     def __init__(self) -> None:
         """
@@ -99,19 +100,30 @@ class HuffmanEncoder:
         """
         Writes the header to the given output file.
 
-        The header is first the number of bytes used for the encoding table followed
-        by the table table itself. The encoding table is needed later to decode the 
-        data.
+        The header is first the number of bytes used to store the encoding table, 
+        then the table itself, and finally the encoding for _PSEUDO_EOF. 
+        The encoding table is needed later to decode the data.
+
+        The encoding table is written as packed bytes. This is more space efficient
+        than using a JSON string, and avoids the security risks of pickling.
         """
 
-        # Write the encoding table as a json string, which is more secure
-        # than pickling
-        encoding_table_json = json.dumps(self._encoding_table)
-        encoding_table_num_bytes = len(encoding_table_json)
+        # Remove pseudo EOF character from encoding table
+        pseudo_eof_encoding = self._encoding_table.pop(
+            HuffmanEncoder._PSEUDO_EOF)
 
-        output.write(encoding_table_num_bytes.to_bytes(
-            HuffmanEncoder._HEADER_LENGTH_NUM_BYTES, 'big'))
-        output.write(encoding_table_json.encode())
+        num_items = len(self._encoding_table)
+        output.write(struct.pack('>I', num_items))
+        for ch, encoding in self._encoding_table.items():
+            output.write(struct.pack('>BI', ord(ch), len(encoding)))
+            output.write(encoding.encode())
+
+        # Write the pseudo EOF character. Use -1 as a placeholder
+        output.write(struct.pack('>iB', -1, len(pseudo_eof_encoding)))
+        output.write(pseudo_eof_encoding.encode())
+
+        # Add the pseudo EOF character back to the encoding table
+        self._encoding_table[HuffmanEncoder._PSEUDO_EOF] = pseudo_eof_encoding
 
     def _write_encoded_data(self, input_file: typing.TextIO, output_file: typing.BinaryIO) -> None:
         """
@@ -149,17 +161,23 @@ class HuffmanEncoder:
         After this method completes, the open input file will be at the start of the
         encoded data, ready for decoding.
         """
-        encoding_table_num_bytes = int.from_bytes(
-            input_encoded_file.read(HuffmanEncoder._HEADER_LENGTH_NUM_BYTES), 'big')
-        encoding_table_json = input_encoded_file.read(
-            encoding_table_num_bytes).decode()
+        num_items = struct.unpack('>I', input_encoded_file.read(
+            HuffmanEncoder._HEADER_LENGTH_NUM_BYTES))[0]
+        self._encoding_table = {}
+        for _ in range(num_items):
+            ch_ord, encoding_length = struct.unpack(
+                '>BI', input_encoded_file.read(HuffmanEncoder._HEADER_ENTRY_NUM_BYTES))
+            encoding = input_encoded_file.read(encoding_length).decode()
+            self._encoding_table[encoding] = chr(ch_ord)
 
-        # Decode the encoding table and reverse it for quick encoded -> original
-        # lookups
-        self._encoding_table = {
-            v: k
-            for k, v in json.loads(encoding_table_json).items()
-        }
+        # Read the pseudo EOF character, encoded in the bytes directly after the rest
+        # of the encoding table
+        eof_placeholder, eof_encoding_length = struct.unpack(
+            '>iB', input_encoded_file.read(HuffmanEncoder._HEADER_ENTRY_NUM_BYTES))
+        if eof_placeholder == -1:
+            eof_encoding = input_encoded_file.read(
+                eof_encoding_length).decode()
+            self._encoding_table[eof_encoding] = HuffmanEncoder._PSEUDO_EOF
 
     def _write_decoded_data(self, input: typing.BinaryIO, output: typing.TextIO) -> None:
         """
