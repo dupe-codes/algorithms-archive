@@ -4,6 +4,7 @@ and decompressing files.
 """
 
 import heapq
+import json
 import typing
 
 
@@ -36,6 +37,7 @@ class HuffmanEncoder:
 
     _PSEUDO_EOF = 'EOF'
     _BYTE_SIZE = 8
+    _HEADER_LENGTH_NUM_BYTES = 4
 
     def __init__(self) -> None:
         """
@@ -101,7 +103,15 @@ class HuffmanEncoder:
         by the table table itself. The encoding table is needed later to decode the 
         data.
         """
-        pass
+
+        # Write the encoding table as a json string, which is more secure
+        # than pickling
+        encoding_table_json = json.dumps(self._encoding_table)
+        encoding_table_num_bytes = len(encoding_table_json)
+
+        output.write(encoding_table_num_bytes.to_bytes(
+            HuffmanEncoder._HEADER_LENGTH_NUM_BYTES, 'big'))
+        output.write(encoding_table_json.encode())
 
     def _write_encoded_data(self, input_file: typing.TextIO, output_file: typing.BinaryIO) -> None:
         """
@@ -134,8 +144,22 @@ class HuffmanEncoder:
     def _fit_decoder(self, input_encoded_file: typing.BinaryIO) -> None:
         """
         Fits the decoder to the given input. 
+
+        The decoder is fit by reading the encoding table from the header of the file.
+        After this method completes, the open input file will be at the start of the
+        encoded data, ready for decoding.
         """
-        pass
+        encoding_table_num_bytes = int.from_bytes(
+            input_encoded_file.read(HuffmanEncoder._HEADER_LENGTH_NUM_BYTES), 'big')
+        encoding_table_json = input_encoded_file.read(
+            encoding_table_num_bytes).decode()
+
+        # Decode the encoding table and reverse it for quick encoded -> original
+        # lookups
+        self._encoding_table = {
+            v: k
+            for k, v in json.loads(encoding_table_json).items()
+        }
 
     def _write_decoded_data(self, input: typing.BinaryIO, output: typing.TextIO) -> None:
         """
@@ -143,7 +167,7 @@ class HuffmanEncoder:
         """
         def read_bits(input: typing.BinaryIO) -> typing.Generator[str, None, None]:
             for byte in iter(lambda: input.read(1), b''):
-                for bit in format(ord(byte), 'b'):
+                for bit in format(ord(byte), '08b'):
                     yield bit
 
         current_code = ''
@@ -151,11 +175,13 @@ class HuffmanEncoder:
             # Build the code until we find a match
             current_code += bit
             if current_code in self._encoding_table:
-                output.write(self._encoding_table[current_code])
+                decoded_char = self._encoding_table[current_code]
+                if decoded_char == HuffmanEncoder._PSEUDO_EOF:
+                    return
+                output.write(decoded_char)
                 current_code = ''
 
     def encode(self, input_file: str, destination: str) -> None:
-        print('Encoding...')
         self._fit_encoder(input_file)
 
         with open(input_file, 'r') as file:
@@ -164,7 +190,6 @@ class HuffmanEncoder:
                 self._write_encoded_data(file, output)
 
     def decode(self, input_encoded_file: str, destination: str) -> None:
-        print('Decoding...')
         with open(input_encoded_file, 'rb') as file:
             with open(destination, 'w') as output:
                 self._fit_decoder(file)
