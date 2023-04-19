@@ -1,10 +1,12 @@
+#!/usr/bin/env python3
+
 """
 Command line utility to zip and unzip files using Huffman coding.
 """
 
 import argparse
 
-from huffman_encoder.encoder import HuffmanEncoder
+from encoder import HuffmanEncoder
 
 
 def parse_args() -> argparse.Namespace:
