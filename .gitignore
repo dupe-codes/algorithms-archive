@@ -47,3 +47,6 @@ bin/
 *.pyc
 __pycache__/
 .venv
+
+# Scala metals 
+.metals/
