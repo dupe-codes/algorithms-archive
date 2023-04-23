@@ -12,7 +12,7 @@ A simple command line utility for compressing files using the Huffman coding sch
 To encode an input file:
 
 ```
-./huff_zip.py -d input.txt output.huff
+./huff_zip.py input.txt output.huff
 ```
 
 To decode an encoded file:
