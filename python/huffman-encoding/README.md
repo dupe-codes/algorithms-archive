@@ -18,7 +18,7 @@ To encode an input file:
 To decode an encoded file:
 
 ```
-./huff_zip.py -d output.huff input_decoded.txt
+./huff_zip.py -d output.huff decoded_output.txt
 ```
 
 Note that attempting to decode a file that was _not_ actually encoded with HuffmanCoder#encode
