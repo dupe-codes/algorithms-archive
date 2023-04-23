@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 """
-Command line utility to zip and unzip files using Huffman coding.
+Command line utility to zip and unzip files using Huffman coding algorithm [1].
+
+[1] https://en.wikipedia.org/wiki/Huffman_coding
 """
 
 import argparse
@@ -14,7 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description='Zip and unzip files using Huffman coding.')
     parser.add_argument('input_path', help='path to the input file')
-    parser.add_argument('output_path', help='path to the output file')
+    parser.add_argument('output_path', help='path to the desired output file')
     parser.add_argument('-d', '--decode', action='store_true',
                         help='decode the input file')
     return parser.parse_args()

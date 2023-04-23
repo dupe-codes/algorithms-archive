@@ -1,6 +1,18 @@
 """
-This module implements a Huffman encoder and decoder for compressing
-and decompressing files.
+Exports a HuffmanCoder class for encoding and decoding files.
+
+Huffman coding is a variable-length encoding scheme based on character frequencies. 
+An encoding table is built by using the frequencies as weights to build a binary tree,
+with the input characters appearing as the tree's leaves. The tree is traversed 
+to derive binary codes for each charcter. Characters with higher frequencies are assigned 
+shorter codes, and, crucially, no two codes are prefixes of each other. This unique prefix 
+property allows encoded files to be decoded unambiguously.
+
+The main drawbacks of the Huffman coding scheme are:
+    1. The encoding table must be stored in the encoded file so that it can be reused
+       in decoding
+    2. The frequencies of all characters must be known in advance, which means two passes
+       over the input file are required: one to count the characters, and one to encode.
 """
 
 import heapq
@@ -41,26 +53,20 @@ class HuffmanEncoder:
     _HEADER_ENTRY_NUM_BYTES = 5
 
     def __init__(self) -> None:
-        """
-        Initializes a new Huffman encoder.
-        """
         self._encoding_tree: typing.Optional[HuffmanNode] = None
         self._encoding_table: dict[str, str] = {}
         self._character_counts: dict[str, int] = {}
 
     def _count_characters(self, input: str) -> None:
-        """ Counts the number of times each character appears in the given input. """
         for character in input:
             self._character_counts[character] = self._character_counts.get(
                 character, 0) + 1
 
     def _build_encoding_tree(self) -> None:
-        """
-        Builds the encoding tree from the character counts.
-        """
+        # Include a pseudo EOF character in the encoding tree, which we'll use to
+        # mark the end of the encoded data
         heap = [HuffmanNode(HuffmanEncoder._PSEUDO_EOF, 0)]
         for character, count in self._character_counts.items():
-            # Use negative counts so larger counts are at the top of the heap
             heapq.heappush(heap, HuffmanNode(character, count))
 
         while len(heap) > 1:
@@ -72,10 +78,6 @@ class HuffmanEncoder:
         self._encoding_tree = heap[0]
 
     def _build_encoding_table(self) -> None:
-        """
-        Builds the encoding table from the encoding tree.
-        """
-
         stack = []
         stack.append((self._encoding_tree, ''))
         while len(stack) > 0:
@@ -126,9 +128,6 @@ class HuffmanEncoder:
         self._encoding_table[HuffmanEncoder._PSEUDO_EOF] = pseudo_eof_encoding
 
     def _write_encoded_data(self, input_file: typing.TextIO, output_file: typing.BinaryIO) -> None:
-        """
-        Writes the encoded data to the given output file.
-        """
         def write_chunk(chunk: str, output_file: typing.BinaryIO) -> str:
             if len(chunk) == HuffmanEncoder._BYTE_SIZE:
                 output_file.write(bytearray([int(chunk, 2)]))
@@ -180,9 +179,6 @@ class HuffmanEncoder:
             self._encoding_table[eof_encoding] = HuffmanEncoder._PSEUDO_EOF
 
     def _write_decoded_data(self, input: typing.BinaryIO, output: typing.TextIO) -> None:
-        """
-        Writes the decoded data to the given output file.
-        """
         def read_bits(input: typing.BinaryIO) -> typing.Generator[str, None, None]:
             for byte in iter(lambda: input.read(1), b''):
                 for bit in format(ord(byte), '08b'):
