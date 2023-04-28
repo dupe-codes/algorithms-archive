@@ -10,7 +10,7 @@ class GradientDescent {
   // Guess initial x(0), k = 0
   //
   // while gradient greater than epsilon OR number of iterations < desired epochs
-  //  compute gradient vector given x(i)or
+  //  compute gradient vector given x(i)
   //  compute x(i+1) = x(i) - eta * (gradient vector)
   //  k = k + 1
   //
