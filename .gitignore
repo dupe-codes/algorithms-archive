@@ -50,3 +50,6 @@ __pycache__/
 
 # Scala metals 
 .metals/
+
+# C++ development artifacts
+.ccls-cache/
