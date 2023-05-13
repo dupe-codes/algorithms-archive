@@ -1,5 +1,5 @@
-#include <iostream>
 #include <algorithms_archive/binary_search/search.h>
+#include <iostream>
 
 int main() {
     int num_elements = 5;
@@ -9,4 +9,3 @@ int main() {
     std::cout << "result: " << result << std::endl;
     return 0;
 }
-
