@@ -1,6 +1,10 @@
 #include <algorithms_archive/binary_search/search.h>
 
 namespace binary_search {
+    
+
+
+
     int search(int* arr, int size, int target) {
         int left = 0;
         int right = size - 1;
