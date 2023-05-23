@@ -1,13 +1,13 @@
 """
 Exports a HuffmanCoder class for encoding and decoding files.
 
-Huffman coding is a variable-length encoding scheme based on character frequencies. 
-The frequencies are used as weights to build a binary tree, with the input characters 
-appearing as the tree's leaves. The tree is then traversed to build an encoding table, with 
-binary codes assigned to each character. Left traverals are interpreted as adding "0" to 
-a code, and right traversals as adding "1". Characters with higher frequencies appear 
-at shallower levels of the tree, and thus are assigned shorter codes. Crucially, no pair 
-of the resulting codes are prefixes of each other. This unique prefix property allows 
+Huffman coding is a variable-length encoding scheme based on character frequencies.
+The frequencies are used as weights to build a binary tree, with the input characters
+appearing as the tree's leaves. The tree is then traversed to build an encoding table, with
+binary codes assigned to each character. Left traverals are interpreted as adding "0" to
+a code, and right traversals as adding "1". Characters with higher frequencies appear
+at shallower levels of the tree, and thus are assigned shorter codes. Crucially, no pair
+of the resulting codes are prefixes of each other. This unique prefix property allows
 encoded files to be decoded unambiguously.
 
 The main drawbacks of the Huffman coding scheme are:
