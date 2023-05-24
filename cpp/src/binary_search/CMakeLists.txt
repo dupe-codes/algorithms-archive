@@ -4,7 +4,6 @@ set(
 
 add_library(binary_search search.cpp ${HEADER_LIST})
 
+# TODO: replace relative path with "${AlgorithmsArchive_SOURCE_DIR}/include"
 target_include_directories(binary_search PUBLIC ../../include)
-
-# target_compile_features(binary_search PUBLIC cxx_std_20)
 
