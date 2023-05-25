@@ -215,6 +215,7 @@ class HuffmanEncoder:
                 self._write_encoded_data(file, output)
 
     def decode(self, input_encoded_file: str, destination: str) -> None:
+        """Decodes the given file and writes the decoded data to the given destination."""
         with open(input_encoded_file, "rb") as file:
             with open(destination, "w") as output:
                 self._fit_decoder(file)
