@@ -144,6 +144,7 @@ class HuffmanEncoder:
     def _write_encoded_data(
         self, input_file: typing.TextIO, output_file: typing.BinaryIO
     ) -> None:
+
         def write_chunk(chunk: str, output_file: typing.BinaryIO) -> str:
             if len(chunk) == HuffmanEncoder._BYTE_SIZE:
                 output_file.write(bytearray([int(chunk, 2)]))
