@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include <algorithms_archive/binary_search/search.h>
+#include "algorithms_archive/binary_search/search.h"
 #include <catch2/catch.hpp>
 
 TEST_CASE("Quick check", "[main]") {
