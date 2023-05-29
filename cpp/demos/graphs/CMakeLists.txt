@@ -1,0 +1,4 @@
+add_executable(adjacency_matrix_demo adjacency_matrix.cpp)
+
+target_link_libraries(adjacency_matrix_demo PRIVATE graph)
+
