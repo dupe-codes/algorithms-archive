@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "algorithms_archive/graph/graph.h"
+#include "algorithms_archive/data_structures/graph.h"
 
-using namespace algorithms_archive::graph;
+using namespace algorithms_archive;
 
 int main() {
     AdjacencyMatrixGraph graph = {

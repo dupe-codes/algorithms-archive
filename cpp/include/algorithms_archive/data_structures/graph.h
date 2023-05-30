@@ -3,8 +3,6 @@
 
 namespace algorithms_archive {
 
-namespace graph {
-
 struct Node {
     std::size_t id;
 };
@@ -25,7 +23,5 @@ class AdjacencyMatrixGraph {
     std::size_t size_;
     std::unique_ptr<int[]> matrix_;
 };
-
-} // namespace graph
 
 } // namespace algorithms_archive

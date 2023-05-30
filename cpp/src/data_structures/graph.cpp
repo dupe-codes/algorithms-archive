@@ -2,9 +2,9 @@
 #include <memory>
 #include <set>
 
-#include "algorithms_archive/graph/graph.h"
+#include "algorithms_archive/data_structures/graph.h"
 
-using namespace algorithms_archive::graph;
+using namespace algorithms_archive;
 
 AdjacencyMatrixGraph::AdjacencyMatrixGraph(std::size_t size)
     : size_{size}, matrix_{std::unique_ptr<int[]>{new int[size * size]}} {}
