@@ -1,7 +1,18 @@
 # Algorithms & Data Structures Archive
 
-Implementations and notes on interesting algorithms, data structures, and other CS stuff
+Implementations and notes on interesting algorithms and data structures
 
+Also a playground for explorations of programming languages, build tools, and project
+structure
+
+# Languages
+
+- C++
+- Python
+- Rust
+- Scala
+- Clojure
+- OCaml
 
 # TODO list
 
