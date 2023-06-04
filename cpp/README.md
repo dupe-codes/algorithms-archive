@@ -6,13 +6,16 @@ Explorations into the depths of algorithms and data structures with the might of
 
 To build, execute cmake in the root project directory:
 
-`cmake --build build`
+```
+cmake --build build/debug # debug mode
+cmake --build build/release # release mode
+```
 
 # Tests
 
 To execute tests, execute cmake with the test target in the root project directory:
 
-`cmake --build build --target test`
+`cmake --build build/debug --target test`
 
 # Notes
 

@@ -35,4 +35,8 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
   add_subdirectory(tests)
 endif()
 
+# Set flags for debug builds
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    add_compile_options(-Wall -Wextra -pedantic -Werror)
+endif()
 
