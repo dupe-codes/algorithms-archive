@@ -9,8 +9,7 @@ using namespace algorithms_archive;
 AdjacencyMatrixGraph::AdjacencyMatrixGraph(std::size_t size)
     : size_{size}, matrix_{std::unique_ptr<int[]>{new int[size * size]}} {}
 
-AdjacencyMatrixGraph::AdjacencyMatrixGraph(std::initializer_list<Edge> edges) 
-{
+AdjacencyMatrixGraph::AdjacencyMatrixGraph(std::initializer_list<Edge> edges) {
     // count number of unique nodes in the given edges list
     std::set<int> nodes;
     for (const auto &edge : edges) {
