@@ -1,4 +1,4 @@
-add_executable(adjacency_matrix_demo adjacency_matrix.cpp)
+add_executable(adjacency_matrix_demo adjacency_matrix_demo.cpp)
 
 target_link_libraries(adjacency_matrix_demo PRIVATE data_structures)
 

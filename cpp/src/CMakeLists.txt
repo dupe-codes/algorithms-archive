@@ -3,3 +3,5 @@
 
 add_subdirectory(binary_search)
 add_subdirectory(data_structures)
+add_subdirectory(search)
+

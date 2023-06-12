@@ -2,5 +2,7 @@
 
 add_subdirectory(binary_search)
 add_subdirectory(hello_world)
-add_subdirectory(graphs)
+
+# FIXME: This is breaking on compilation due to duplicate symbols :(
+#add_subdirectory(graphs)
 
