@@ -11,15 +11,17 @@ struct Node {
     std::size_t id;
 };
 
-bool operator==(const Node &lhs, const Node &rhs) { return lhs.id == rhs.id; }
-
 struct Edge {
     Node from;
     Node to;
     int weight;
 };
 
-bool operator==(const Edge &lhs, const Edge &rhs) {
+inline bool operator==(const Node lhs, const Node rhs) {
+    return lhs.id == rhs.id;
+}
+
+inline bool operator==(const Edge lhs, const Edge rhs) {
     return lhs.from == rhs.from && lhs.to == rhs.to && lhs.weight == rhs.weight;
 }
 
