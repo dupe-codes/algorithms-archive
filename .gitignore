@@ -47,6 +47,7 @@ bin/
 *.pyc
 __pycache__/
 .venv
+.mypy_cache/
 
 # Scala metals 
 .metals/
