@@ -43,7 +43,9 @@ class HuffmanNode:
     def __lt__(self, other: "HuffmanNode") -> bool:
         return self.count < other.count
 
-    def __eq__(self, other: "HuffmanNode") -> bool:
+    def __eq__(self, other: "object") -> bool:
+        if not isinstance(other, HuffmanNode):
+            return False
         return self.count == other.count
 
     def __gt__(self, other: "HuffmanNode") -> bool:
